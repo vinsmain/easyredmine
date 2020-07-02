@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Easy Redmine Timer</string>
+    <string name="ok">OK</string>
+    <string name="error_connection_timeout">Ошибка подключения к серверу</string>
+    <string name="error_something_went_wrong">Что-то пошло не так</string>
+    <string name="adapter_base_action_retry">Повторить</string>
+    <string name="adapter_base_text_no_data">Нет данных</string>
+    <string name="save">Сохранить</string>
+</resources>

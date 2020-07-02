@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccentAlpha40">#4099D04B</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorTextPrimary">#000000</color>
+    <color name="colorTextSecondary">#444444</color>
+    <color name="colorTextHint">#73444444</color>
+    <color name="colorTextSuccessToast">#FFFFFF</color>
+    <color name="colorTextErrorToast">#FFFFFF</color>
+    <color name="colorWindowBackground">#FFD8D8D8</color>
+    <color name="colorDivider">#CCCCCC</color>
+
+    <color name="colorStatusInProcess">#54C7FC</color>
+    <color name="colorStatusWaiting">#EF6F40</color>
+
+    <color name="colorNavigationBackground">#000000</color>
+    <color name="colorNavigationSecondaryText">#928F8A</color>
+    <color name="colorLaunchScreenBackground">#141414</color>
+
+    <color name="colorListBackground">#FFD7AD</color>
+</resources>
