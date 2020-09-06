@@ -3,77 +3,70 @@ package ru.mgusev.easyredminetimer.app.presentation.selected_project_list;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.subscribers.DisposableSubscriber;
 import moxy.InjectViewState;
 import ru.mgusev.easyredminetimer.app.presentation.base.BasePresenter;
 import ru.mgusev.easyredminetimer.app.presentation.base.ResourceManager;
-import ru.mgusev.easyredminetimer.app.presentation.project_list.ProjectListView;
 import ru.mgusev.easyredminetimer.data.local.pref.LocalStorage;
 import ru.mgusev.easyredminetimer.domain.dto.project.Project;
-import ru.mgusev.easyredminetimer.domain.dto.project.ProjectListHolder;
-import ru.mgusev.easyredminetimer.domain.interactor.project_list.GetProjectListParams;
-import ru.mgusev.easyredminetimer.domain.interactor.project_list.GetProjectListUseCase;
-import ru.mgusev.easyredminetimer.domain.interactor.project_list.SaveSelectedProjectListParams;
-import ru.mgusev.easyredminetimer.domain.interactor.project_list.SaveSelectedProjectListUseCase;
+import ru.mgusev.easyredminetimer.domain.dto.project.SelectedProjectHolder;
+import ru.mgusev.easyredminetimer.domain.interactor.selected_project_list.GetSelectedProjectListUseCase;
 import ru.terrakok.cicerone.Router;
 import timber.log.Timber;
 
 @InjectViewState
-public class SelectedProjectListPresenter extends BasePresenter<ProjectListView> {
+public class SelectedProjectListPresenter extends BasePresenter<SelectedProjectListView> {
 
     private LocalStorage localStorage;
-    private GetProjectListUseCase getProjectListUseCase;
-    private SaveSelectedProjectListUseCase saveSelectedProjectListUseCase;
-    private List<Project> projectList;
-    private int limit = 20;
+    private final SelectedProjectHolder selectedProjectHolder;
+    private final GetSelectedProjectListUseCase getSelectedProjectListUseCase;
 
-    public SelectedProjectListPresenter(Router router, ResourceManager resourceManager, LocalStorage localStorage, GetProjectListUseCase getProjectListUseCase, SaveSelectedProjectListUseCase saveSelectedProjectListUseCase) {
+    private List<Project> projectList;
+
+    public SelectedProjectListPresenter(Router router, ResourceManager resourceManager, LocalStorage localStorage, SelectedProjectHolder selectedProjectHolder, GetSelectedProjectListUseCase getSelectedProjectListUseCase) {
         super(router, resourceManager);
         this.localStorage = localStorage;
-        this.getProjectListUseCase = getProjectListUseCase;
-        this.saveSelectedProjectListUseCase = saveSelectedProjectListUseCase;
+        this.selectedProjectHolder = selectedProjectHolder;
+        this.getSelectedProjectListUseCase = getSelectedProjectListUseCase;
 
         projectList = new ArrayList<>();
 
-        addUseCase(this.getProjectListUseCase);
-        addUseCase(this.saveSelectedProjectListUseCase);
+        addUseCase(this.getSelectedProjectListUseCase);
     }
 
     @Override
     protected void onFirstViewAttach() {
-        loadData(new GetProjectListParams(0, limit, localStorage.getApiToken()));
+        loadData();
     }
 
-    public void loadData(GetProjectListParams params) {
-        getProjectListUseCase.execute(new DisposableSingleObserver<ProjectListHolder>() {
+    public void loadData() {
+        getSelectedProjectListUseCase.execute(new DisposableSubscriber<List<Project>>() {
 
             @Override
-            public void onSuccess(ProjectListHolder projectListHolder) {
-                projectList.addAll(projectListHolder.getProjects());
-                if (projectList.size() == projectListHolder.getTotalCount())
-                    getViewState().showProjectList(projectList);
-                else
-                    loadData(new GetProjectListParams(projectListHolder.getOffset() + limit, limit, localStorage.getApiToken()));
+            public void onNext(List<Project> projects) {
+                projectList.addAll(projects);
+                getViewState().showProjectList(projectList);
             }
 
             @Override
             public void onError(Throwable e) {
                 Timber.d(e);
             }
-        }, params);
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     public void onCardItemClicked(Project item) {
-        for (Project project : projectList) {
-            if (project.getId() == item.getId()) {
-                project.setSelected(!project.isSelected());
-            }
-        }
-        getViewState().showProjectList(projectList);
+        selectedProjectHolder.setProject(item);
+        router.exit();
     }
 
     public void onSaveIconClicked() {
-        saveSelectedProjectListUseCase.execute(new SaveSelectedProjectListParams(getSelectedProjectList()));
+        //saveSelectedProjectListUseCase.execute(new SaveSelectedProjectListParams(getSelectedProjectList()));
     }
 
     private List<Project> getSelectedProjectList() {

@@ -1,12 +1,16 @@
 package ru.mgusev.easyredminetimer.app.ui.main;
 
 import android.os.Bundle;
-import android.widget.FrameLayout;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -21,28 +25,41 @@ import ru.mgusev.easyredminetimer.app.navigation.RouterProvider;
 import ru.mgusev.easyredminetimer.app.presentation.base.ResourceManager;
 import ru.mgusev.easyredminetimer.app.presentation.main.MainPresenter;
 import ru.mgusev.easyredminetimer.app.presentation.main.MainView;
+import ru.mgusev.easyredminetimer.app.ui.ApplicationActivity;
 import ru.mgusev.easyredminetimer.app.ui._base.BaseFragment;
 import ru.mgusev.easyredminetimer.app.ui._base.Layout;
+import ru.mgusev.easyredminetimer.domain.dto.Const;
+import ru.mgusev.easyredminetimer.domain.dto.project.SelectedProjectHolder;
+import ru.mgusev.easyredminetimer.domain.dto.task.Task;
+import ru.mgusev.easyredminetimer.domain.interactor.task.CreateTaskUseCase;
+import ru.mgusev.easyredminetimer.domain.interactor.task.GetTaskListUseCase;
 import ru.terrakok.cicerone.Router;
+import timber.log.Timber;
+
 
 @Layout(id = R.layout.fragment_main)
 public class MainFragment extends BaseFragment implements MainView, RouterProvider {
 
-    @BindView(R.id.mainFragmentContainer)
-    FrameLayout fragmentContainer;
+    @BindView(R.id.rvTaskList)
+    RecyclerView rvTaskList;
 
     @Inject
     ResourceManager resourceManager;
-
     @InjectPresenter
     MainPresenter presenter;
-
     @Inject
     Router router;
+    @Inject
+    SelectedProjectHolder selectedProjectHolder;
+    @Inject
+    CreateTaskUseCase createTaskUseCase;
+    @Inject
+    GetTaskListUseCase getTaskListUseCase;
+
 
     @ProvidePresenter
     MainPresenter providePresenter() {
-        return new MainPresenter(router, resourceManager);
+        return new MainPresenter(router, resourceManager, selectedProjectHolder, createTaskUseCase, getTaskListUseCase);
     }
 
     public static MainFragment getInstance() {
@@ -52,78 +69,71 @@ public class MainFragment extends BaseFragment implements MainView, RouterProvid
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //bottomNavigationView.setOnNavigationItemSelectedListener(this);
-//        if (getChildFragmentManager().findFragmentById(R.id.mainFragmentContainer) == null) {
-//            currentTab = TAB_NEWS;
-//
-//        } else {
-//            bottomNavigationView.getMenu().getItem(0).setChecked(true);
-//        }
-        //bottomNavigationView.setSelectedItemId(bottomNavigationView.getMenu().getItem(1).getItemId());
-    }
 
-    private void initTabFragment(int position) {
-        FragmentManager fm = getChildFragmentManager();
-        Fragment currentFragment = null;
-        List<Fragment> fragments = fm.getFragments();
-        if (fragments != null) {
-            for (Fragment f : fragments) {
-                if (f.isVisible()) {
-                    currentFragment = f;
+        rvTaskList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        rvTaskList.setHasFixedSize(true);
+        rvTaskList.setAdapter(new TaskListAdapter(
+                getString(R.string.adapter_base_action_retry),
+                getString(R.string.adapter_base_text_no_data),
+                resourceManager));
+
+        ((TaskListAdapter) rvTaskList.getAdapter()).setItemViewClick((item, view) -> {
+            //Timber.d(String.valueOf(view.getId()) + " " + item.getId() + " " + item.getStatus());
+            switch (view.getId()) {
+                case R.id.btnStart:
+                    Timber.d("Start clicked " + item.getProjectName() + " " + item.getStatus());
+                    MainFragment.this.sendCommandToStopwatchService(item, Const.STATUS_START_OR_PAUSE);
                     break;
-                }
+                case R.id.btnStop:
+                    MainFragment.this.sendCommandToStopwatchService(item, Const.STATUS_STOP);
+                    break;
             }
-        }
-        Fragment newFragment = fm.findFragmentByTag(String.valueOf(position));
-
-        if (currentFragment != null && newFragment != null && currentFragment == newFragment)
-            return;
-
-        FragmentTransaction transaction = fm.beginTransaction();
-//        if (newFragment == null) {
-//            Fragment fragment = new Screens.TabScreen(position, new Category(resourceManager.getString(R.string.apiCategoryPodcasts))).getFragment();
-//            if (fragment != null) {
-//                transaction.add(R.id.mainFragmentContainer, fragment, String.valueOf(position));
-//            }
-//        }
-
-        if (currentFragment != null) {
-            ((BaseFragment) currentFragment).onHide();
-            transaction.hide(currentFragment);
-        }
-
-        if (newFragment != null) {
-            ((BaseFragment) newFragment).onShow();
-            transaction.show(newFragment);
-        }
-        transaction.commitNow();
+        });
     }
 
-//    @Override
-//    public boolean onBackPressed() {
-//        FragmentManager fm = getChildFragmentManager();
-//        Fragment fragment = null;
-//        List<Fragment> fragments = fm.getFragments();
-//        if (fragments != null) {
-//            for (Fragment f : fragments) {
-//                if (f.isVisible()) {
-//                    fragment = f;
-//                    break;
-//                }
-//            }
-//        }
-//        if (fragment != null
-//                && fragment instanceof BackButtonListener
-//                && ((BackButtonListener) fragment).onBackPressed()) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.checkCreateTaskRequest();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_task:
+                presenter.onAddTaskClicked();
+                return true;
+            case R.id.action_report:
+                presenter.onReportClicked();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void sendCommandToStopwatchService(Task task, int status) {
+        ((ApplicationActivity) getActivity()).getService().sendCommand(task, status);
+    }
+
+    @Override
+    public void showTaskList(List<Task> list) {
+        ((TaskListAdapter) rvTaskList.getAdapter()).setItems(list);
+    }
+
+    @Override
+    public void invalidateTaskItem(Task task) {
+        ((TaskListAdapter) rvTaskList.getAdapter()).invalidateItem(task);
+    }
 
     @Override
     public Router getRouter() {
         return router;
     }
-
 }

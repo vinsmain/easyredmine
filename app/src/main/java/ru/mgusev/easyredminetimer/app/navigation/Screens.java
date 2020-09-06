@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment;
 
 import ru.mgusev.easyredminetimer.app.ui.main.MainFragment;
 import ru.mgusev.easyredminetimer.app.ui.project_list.ProjectListFragment;
+import ru.mgusev.easyredminetimer.app.ui.report.ReportFragment;
 import ru.mgusev.easyredminetimer.app.ui.request_token.RequestTokenFragment;
+import ru.mgusev.easyredminetimer.app.ui.selected_project_list.SelectedProjectListFragment;
 import ru.terrakok.cicerone.android.support.SupportAppScreen;
 
 public class Screens {
@@ -31,6 +33,22 @@ public class Screens {
         @Override
         public Fragment getFragment() {
             return ProjectListFragment.getInstance();
+        }
+    }
+
+    public static final class SelectedProjectListScreen extends SupportAppScreen {
+
+        @Override
+        public Fragment getFragment() {
+            return SelectedProjectListFragment.getInstance();
+        }
+    }
+
+    public static final class ReportScreen extends SupportAppScreen {
+
+        @Override
+        public Fragment getFragment() {
+            return ReportFragment.getInstance();
         }
     }
 

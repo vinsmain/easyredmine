@@ -4,15 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true"
     tools:context=".app.ui.main.MainFragment">
 
-    <FrameLayout
-        android:id="@+id/mainFragmentContainer"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTaskList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/navigation_height">
-    </FrameLayout>
+        android:clipToPadding="false"
+        android:splitMotionEvents="false"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

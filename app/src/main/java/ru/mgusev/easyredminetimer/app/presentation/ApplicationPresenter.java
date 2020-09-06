@@ -26,7 +26,7 @@ public class ApplicationPresenter extends BasePresenter<BaseView> {
     @Override
     protected void onFirstViewAttach() {
         if (localStorage.hasApiToken())
-            router.replaceScreen(new Screens.ProjectListScreen());
+            router.replaceScreen(new Screens.MainScreen());
         else
             router.replaceScreen(new Screens.RequestTokenScreen());
     }

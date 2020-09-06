@@ -32,7 +32,6 @@ public class ProjectListViewHolder extends BaseViewHolder<Project> {
 
     @Override
     public void fill(Project item, boolean isLast) {
-        Timber.d(String.valueOf(item));
         if (itemClick != null) {
             viewItemClick.setOnClickListener(v -> itemClick.onItemClick(item));
         }

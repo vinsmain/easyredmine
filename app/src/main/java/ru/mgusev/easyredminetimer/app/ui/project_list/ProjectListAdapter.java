@@ -32,7 +32,6 @@ public class ProjectListAdapter extends BaseAdapter<ProjectListViewHolder, Proje
             public boolean areItemsTheSame(int i, int i1) {
                 Project oldItem = oldItems.get(i);
                 Project newItem = newItems.get(i1);
-
                 return oldItem != null && newItem != null && oldItem.getId() == newItem.getId();
             }
 
@@ -40,9 +39,6 @@ public class ProjectListAdapter extends BaseAdapter<ProjectListViewHolder, Proje
             public boolean areContentsTheSame(int i, int i1) {
                 Project oldItem = oldItems.get(i);
                 Project newItem = newItems.get(i1);
-                Timber.d(oldItem.getName() + " " + newItem.getName());
-                Timber.d(oldItem.isSelected() + " " + newItem.isSelected());
-
                 return  oldItem.equals(newItem);
             }
 

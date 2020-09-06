@@ -42,15 +42,16 @@ public abstract class BaseTabContainerFragment extends BaseFragment implements B
 
     @Override
     public boolean onBackPressed() {
-        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.mainFragmentContainer);
-        if (fragment != null
-                && fragment instanceof BackButtonListener
-                && ((BackButtonListener) fragment).onBackPressed()) {
-            return true;
-        } else {
-            ((RouterProvider) getParentFragment()).getRouter().exit();
-            return true;
-        }
+//        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.mainFragmentContainer);
+//        if (fragment != null
+//                && fragment instanceof BackButtonListener
+//                && ((BackButtonListener) fragment).onBackPressed()) {
+//            return true;
+//        } else {
+//            ((RouterProvider) getParentFragment()).getRouter().exit();
+//            return true;
+//        }
+        return true;
     }
 
     protected abstract String getContainerName();
@@ -63,13 +64,13 @@ public abstract class BaseTabContainerFragment extends BaseFragment implements B
 
     @Override
     public void onShow() {
-        BaseFragment fragment = (BaseFragment) getChildFragmentManager().findFragmentById(R.id.mainFragmentContainer);
-        if (fragment != null) fragment.onShow();
+        //BaseFragment fragment = (BaseFragment) getChildFragmentManager().findFragmentById(R.id.mainFragmentContainer);
+        //if (fragment != null) fragment.onShow();
     }
 
     @Override
     public void onHide() {
-        BaseFragment fragment = (BaseFragment) getChildFragmentManager().findFragmentById(R.id.mainFragmentContainer);
-        if (fragment != null) fragment.onHide();
+//        BaseFragment fragment = (BaseFragment) getChildFragmentManager().findFragmentById(R.id.mainFragmentContainer);
+//        if (fragment != null) fragment.onHide();
     }
 }

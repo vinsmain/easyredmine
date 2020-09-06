@@ -12,12 +12,10 @@ import java.util.List;
 import ru.mgusev.easyredminetimer.R;
 import ru.mgusev.easyredminetimer.app.presentation.base.ResourceManager;
 import ru.mgusev.easyredminetimer.app.ui._base.recycler.adapter.BaseAdapter;
-import ru.mgusev.easyredminetimer.app.ui.project_list.ProjectListViewHolder;
 import ru.mgusev.easyredminetimer.domain.dto.project.Project;
-import timber.log.Timber;
 
 
-public class SelectedProjectListAdapter extends BaseAdapter<ProjectListViewHolder, Project> {
+public class SelectedProjectListAdapter extends BaseAdapter<SelectedProjectListViewHolder, Project> {
 
     private ResourceManager resourceManager;
 
@@ -41,10 +39,8 @@ public class SelectedProjectListAdapter extends BaseAdapter<ProjectListViewHolde
             public boolean areContentsTheSame(int i, int i1) {
                 Project oldItem = oldItems.get(i);
                 Project newItem = newItems.get(i1);
-                Timber.d(oldItem.getName() + " " + newItem.getName());
-                Timber.d(oldItem.isSelected() + " " + newItem.isSelected());
 
-                return  oldItem.equals(newItem);
+                return  oldItem.getName().equals(newItem.getName());
             }
 
             @Nullable
@@ -61,9 +57,6 @@ public class SelectedProjectListAdapter extends BaseAdapter<ProjectListViewHolde
                 if (!oldItem.getName().equals(newItem.getName())) {
                     diffBundle.putString(Project.KEY_NAME, newItem.getName());
                 }
-                if (oldItem.isSelected() != newItem.isSelected()) {
-                    diffBundle.putBoolean(Project.KEY_SELECTED, newItem.isSelected());
-                }
                 if (diffBundle.size() == 0) return null;
                 return diffBundle;
             }
@@ -71,8 +64,8 @@ public class SelectedProjectListAdapter extends BaseAdapter<ProjectListViewHolde
     }
 
     @Override
-    public ProjectListViewHolder getItemViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ProjectListViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_project_item, parent, false), itemClick, resourceManager);
+    public SelectedProjectListViewHolder getItemViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new SelectedProjectListViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_selected_project_item, parent, false), itemClick, resourceManager);
     }
 
     public void invalidateItem(Project item) {

@@ -21,5 +21,9 @@
     <color name="colorNavigationSecondaryText">#928F8A</color>
     <color name="colorLaunchScreenBackground">#141414</color>
 
-    <color name="colorListBackground">#FFD7AD</color>
+    <color name="colorListBackground">#FFFFFF</color>
+    <color name="calendar_header">#D50000</color>
+    <color name="calendar_header_title">#FFFFFF</color>
+    <color name="selected_date_circle_color">#D50000</color>
+    <color name="range_color">#5CD50000</color>
 </resources>

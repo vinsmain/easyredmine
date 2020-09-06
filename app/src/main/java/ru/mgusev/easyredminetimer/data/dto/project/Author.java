@@ -1,4 +1,4 @@
-package ru.mgusev.easyredminetimer.domain.dto.project;
+package ru.mgusev.easyredminetimer.data.dto.project;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

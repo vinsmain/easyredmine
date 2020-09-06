@@ -1,44 +1,39 @@
 package ru.mgusev.easyredminetimer.app.ui._base.formatter;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Locale;
 
-public class DateTimeFormat extends SimpleDateFormat {
+import timber.log.Timber;
 
-    private static DateTimeFormat formatter;
+public class DateTimeFormatter {
 
-    private DateTimeFormat() {
-        super("dd.MM.yyyy HH:mm");
+    public static String getDateFormatted(LocalDate date) {
+        return java.time.format.DateTimeFormatter.ofPattern("YYYY-MM-dd").format(date);
     }
 
-    public static DateTimeFormat instance() {
-        if (formatter == null) formatter = new DateTimeFormat();
-
-        return formatter;
+    public static String getDateFormatted(Calendar calendar) {
+        LocalDate date = LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()).toLocalDate();
+        return java.time.format.DateTimeFormatter.ofPattern("dd.MM.YYYY").format(date);
     }
 
-    public static String getTime(long publishTime) {
-        long currentTime = new Date().getTime();
-        long diffTime = (currentTime - publishTime) / 1000;
-        if (diffTime < 60) {
-            return getSecondText((int) diffTime);
-        } else if (diffTime < 60 * 60) {
-            return getMinuteText(Math.round(diffTime / 60f));
-        } else if (diffTime < 60 * 60 * 24 && new Date(publishTime).getDay() == new Date(currentTime).getDay()) {
-            return getHourText(Math.round(diffTime / (60 * 60f)));
-        } else {
-            return instance().format(publishTime);
-        }
+    public static String getDurationFormatted(long durationInSec) {
+        return String.format(Locale.getDefault(),  "%d:%02d:%02d", durationInSec / 3600, (durationInSec % 3600) / 60, durationInSec % 60);
     }
 
-    public static String getDate(long publishTime) {
-        return instance().format(publishTime);
+    public static String getDurationFormattedHM(long durationInSec) {
+        if (durationInSec / 3600 == 0 && (durationInSec % 3600) / 60 == 0)
+            return "< 1 м.";
+        return String.format(Locale.getDefault(),  "%d ч. %02d м.", durationInSec / 3600, (durationInSec % 3600) / 60);
     }
 
-    public static String getDuration(int durationInSeconds) {
-        //Timber.d(String.valueOf(durationInSeconds));
-        return String.format(Locale.getDefault(), "%d:%02d:%02d", durationInSeconds / 3600, (durationInSeconds % 3600) / 60, (durationInSeconds % 60));
+    public static double getHours(long durationInSec) {
+        BigDecimal result = new BigDecimal(Double.toString(durationInSec / 3600d));
+        Timber.d(String.valueOf(result.setScale(2, RoundingMode.HALF_UP).doubleValue()));
+        return result.setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     private static String getSecondText(int seconds) {

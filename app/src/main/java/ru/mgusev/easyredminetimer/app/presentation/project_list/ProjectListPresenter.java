@@ -3,10 +3,13 @@ package ru.mgusev.easyredminetimer.app.presentation.project_list;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import moxy.InjectViewState;
+import ru.mgusev.easyredminetimer.app.navigation.Screens;
 import ru.mgusev.easyredminetimer.app.presentation.base.BasePresenter;
 import ru.mgusev.easyredminetimer.app.presentation.base.ResourceManager;
+
 import ru.mgusev.easyredminetimer.data.local.pref.LocalStorage;
 import ru.mgusev.easyredminetimer.domain.dto.project.Project;
 import ru.mgusev.easyredminetimer.domain.dto.project.ProjectListHolder;
@@ -72,7 +75,21 @@ public class ProjectListPresenter extends BasePresenter<ProjectListView> {
     }
 
     public void onSaveIconClicked() {
-        saveSelectedProjectListUseCase.execute(new SaveSelectedProjectListParams(getSelectedProjectList()));
+        saveSelectedProjectList();
+    }
+
+    private void saveSelectedProjectList() {
+        saveSelectedProjectListUseCase.execute(new DisposableCompletableObserver() {
+            @Override
+            public void onComplete() {
+                router.replaceScreen(new Screens.MainScreen());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e);
+            }
+        }, new SaveSelectedProjectListParams(getSelectedProjectList()));
     }
 
     private List<Project> getSelectedProjectList() {

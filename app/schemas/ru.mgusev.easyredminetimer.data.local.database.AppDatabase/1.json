@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4142522e670c3404fa5430d655459911",
+    "identityHash": "5eb4b8098684a51f85b18bfd055617e6",
     "entities": [
       {
-        "tableName": "Project",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `identifier` TEXT, `description` TEXT, `homepage` TEXT, `status` INTEGER, `isPublic` INTEGER, `easyStartDate` TEXT, `sumTimeEntries` REAL, `sumEstimatedHours` REAL, `createdOn` TEXT, `updatedOn` TEXT, `startDate` TEXT, PRIMARY KEY(`id`))",
+        "tableName": "projects",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `enabled` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,20 +21,64 @@
             "notNull": false
           },
           {
-            "fieldPath": "identifier",
-            "columnName": "identifier",
+            "fieldPath": "enabled",
+            "columnName": "enabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "tasks",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timeEntryId` INTEGER NOT NULL, `projectId` INTEGER NOT NULL, `activityId` INTEGER NOT NULL, `hours` REAL NOT NULL, `comments` TEXT, `spentOn` TEXT, `status` INTEGER NOT NULL, `time` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeEntryId",
+            "columnName": "timeEntryId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "projectId",
+            "columnName": "projectId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activityId",
+            "columnName": "activityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hours",
+            "columnName": "hours",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comments",
+            "columnName": "comments",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "description",
-            "columnName": "description",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "homepage",
-            "columnName": "homepage",
+            "fieldPath": "spentOn",
+            "columnName": "spentOn",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -42,47 +86,37 @@
             "fieldPath": "status",
             "columnName": "status",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
-            "fieldPath": "isPublic",
-            "columnName": "isPublic",
+            "fieldPath": "time",
+            "columnName": "time",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "activities",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
-            "fieldPath": "easyStartDate",
-            "columnName": "easyStartDate",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "sumTimeEntries",
-            "columnName": "sumTimeEntries",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "sumEstimatedHours",
-            "columnName": "sumEstimatedHours",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "createdOn",
-            "columnName": "createdOn",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "updatedOn",
-            "columnName": "updatedOn",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "startDate",
-            "columnName": "startDate",
+            "fieldPath": "name",
+            "columnName": "name",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -95,12 +129,50 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "times",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `taskId` INTEGER NOT NULL, `timeStart` TEXT, `timeStop` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "taskId",
+            "columnName": "taskId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeStart",
+            "columnName": "timeStart",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timeStop",
+            "columnName": "timeStop",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4142522e670c3404fa5430d655459911')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5eb4b8098684a51f85b18bfd055617e6')"
     ]
   }
 }

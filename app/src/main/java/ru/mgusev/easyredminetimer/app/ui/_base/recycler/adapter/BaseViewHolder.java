@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder {
 
     protected BaseAdapter.OnItemClick<T> itemClick;
+    protected BaseAdapter.OnItemViewClick<T> itemViewClick;
 
     public BaseViewHolder(View itemView) {
         super(itemView);
@@ -21,6 +22,13 @@ public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.itemClick = itemClick;
+    }
+
+    public BaseViewHolder(View itemView, BaseAdapter.OnItemClick<T> itemClick, BaseAdapter.OnItemViewClick<T> itemViewClick) {
+        super(itemView);
+        ButterKnife.bind(this, itemView);
+        this.itemClick = itemClick;
+        this.itemViewClick = itemViewClick;
     }
 
     public abstract void fill(T item, boolean isLast);

@@ -14,8 +14,9 @@
         android:id="@+id/inputApiToken"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:textSize="14sp"
-        android:layout_margin="@dimen/standard_margin"/>
+        android:layout_margin="@dimen/standard_margin"
+        android:textAlignment="center"
+        android:textSize="14sp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSaveApiToken"

@@ -26,6 +26,7 @@ public abstract class BaseAdapter<VH extends BaseViewHolder, T extends Serializa
     private final String noDataString;
     protected List<T> items;
     protected OnItemClick<T> itemClick;
+    protected OnItemViewClick<T> itemViewClick;
     protected OnErrorRetryButtonClickListener errorListener;
     private State state;
 
@@ -53,6 +54,10 @@ public abstract class BaseAdapter<VH extends BaseViewHolder, T extends Serializa
 
     public void setItemClick(OnItemClick<T> itemClick) {
         this.itemClick = itemClick;
+    }
+
+    public void setItemViewClick(OnItemViewClick<T> itemViewClick) {
+        this.itemViewClick = itemViewClick;
     }
 
     public void setErrorListener(OnErrorRetryButtonClickListener errorListener) {
@@ -230,6 +235,10 @@ public abstract class BaseAdapter<VH extends BaseViewHolder, T extends Serializa
 
     public interface OnItemClick<T> {
         void onItemClick(T item);
+    }
+
+    public interface OnItemViewClick<T> {
+        void onItemViewClick(T item, View view);
     }
 
     public interface OnErrorRetryButtonClickListener {

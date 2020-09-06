@@ -3,7 +3,7 @@ package ru.mgusev.easyredminetimer.app.ui.selected_project_list;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import java.util.List;
 
@@ -17,8 +17,8 @@ import timber.log.Timber;
 
 public class SelectedProjectListViewHolder extends BaseViewHolder<Project> {
 
-    @BindView(R.id.switchProject)
-    SwitchCompat switchProject;
+    @BindView(R.id.textProjectName)
+    AppCompatTextView textProjectName;
 
     @BindView(R.id.viewItemClick)
     View viewItemClick;
@@ -32,15 +32,10 @@ public class SelectedProjectListViewHolder extends BaseViewHolder<Project> {
 
     @Override
     public void fill(Project item, boolean isLast) {
-        Timber.d(String.valueOf(item));
         if (itemClick != null) {
             viewItemClick.setOnClickListener(v -> itemClick.onItemClick(item));
         }
-        if (itemClick != null) {
-            switchProject.setOnClickListener(v -> itemClick.onItemClick(item));
-        }
-        switchProject.setText(item.getName());
-        switchProject.setChecked(item.isSelected());
+        textProjectName.setText(item.getName());
     }
 
     @Override
@@ -54,10 +49,7 @@ public class SelectedProjectListViewHolder extends BaseViewHolder<Project> {
                 for (String key : bundle.keySet()) {
                     switch (key) {
                         case Project.KEY_NAME:
-                            switchProject.setText(item.getName());
-                            break;
-                        case Project.KEY_SELECTED:
-                            switchProject.setChecked(item.isSelected());
+                            textProjectName.setText(item.getName());
                             break;
                     }
                 }

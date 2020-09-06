@@ -7,7 +7,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatEditText;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +17,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import moxy.presenter.InjectPresenter;
 import moxy.presenter.ProvidePresenter;
 import ru.mgusev.easyredminetimer.R;
@@ -26,8 +24,6 @@ import ru.mgusev.easyredminetimer.app.navigation.RouterProvider;
 import ru.mgusev.easyredminetimer.app.presentation.base.ResourceManager;
 import ru.mgusev.easyredminetimer.app.presentation.project_list.ProjectListPresenter;
 import ru.mgusev.easyredminetimer.app.presentation.project_list.ProjectListView;
-import ru.mgusev.easyredminetimer.app.presentation.request_token.RequestTokenPresenter;
-import ru.mgusev.easyredminetimer.app.presentation.request_token.RequestTokenView;
 import ru.mgusev.easyredminetimer.app.ui._base.BaseFragment;
 import ru.mgusev.easyredminetimer.app.ui._base.Layout;
 import ru.mgusev.easyredminetimer.data.local.pref.LocalStorage;
